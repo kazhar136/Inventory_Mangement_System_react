@@ -14,11 +14,6 @@ const PORT = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(cors());
 
-
-app.get('/ping', (req, res) => {
-    res.send('PONG');
-});
-
 // Use Routers
 app.use('/auth', authrouter); // Base route for user-related endpoints
 app.use('/products', productsrouter);
