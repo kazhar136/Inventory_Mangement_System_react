@@ -36,7 +36,7 @@ function Home() {
     // Function to fetch product data from the backend
     const fetchProducts = async () => {
         try {
-            const url = "http://localhost:8080/products";
+            const url = "https://inventory-mangement-system-react.onrender.com/products";
             const headers = {
                 headers: {
                     'Authorization': localStorage.getItem('token')

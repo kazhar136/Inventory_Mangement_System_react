@@ -34,7 +34,7 @@ function Login() {
         }
         
         try {
-            const url = "http://localhost:8080/auth/login"; // API endpoint for login
+            const url = "https://inventory-mangement-system-react.onrender.com/auth/login"; // API endpoint for login
             
             // Sending login data to the server
             const response = await fetch(url, { 

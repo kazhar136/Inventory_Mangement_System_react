@@ -34,7 +34,7 @@ function Signup() {
         }
         
         try {
-            const url = "http://localhost:8080/auth/signup"; // API endpoint for signup
+            const url = "https://inventory-mangement-system-react.onrender.com/auth/signup"; // API endpoint for signup
             
             // Sending signup data to the server
             const response = await fetch(url, { 
