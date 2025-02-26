@@ -58,22 +58,23 @@ function Home() {
     }, []);
 
     return (
-        <div>
+        <div className="home-container">
             <h1>Welcome {loggedInUser}</h1>
             <button onClick={handleLogout}>Logout</button>
-            
+    
             {/* Display product list */}
-            <div>
+            <div className="product-list">
                 {products && products.map((item, index) => (
                     <ul key={index}>
                         <span>{item.name} : {item.price}</span>
                     </ul>
                 ))}
             </div>
-
+    
             <ToastContainer />
         </div>
     );
+    
 }
 
 export default Home;

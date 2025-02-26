@@ -1,40 +1,72 @@
-
-
-h1 {
+/* Home Page Container */
+.home-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
     text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Welcome Message */
+.home-container h1 {
     color: #333;
+    font-size: 28px;
+    margin-bottom: 20px;
 }
 
-button {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    font-size: 16px;
+/* Logout Button */
+.home-container button:not(.Toastify__close-button) {
+    background-color: #d9534f;
     color: white;
-    background-color: #007bff;
     border: none;
-    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s ease;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
 }
 
-button:hover {
-    background-color: #0056b3;
+.home-container button:hover {
+    background-color: #c9302c;
 }
 
-ul {
+/* Product List */
+.product-list {
+    margin-top: 30px;
     list-style: none;
     padding: 0;
-    margin: 10px auto;
-    background: white;
-    width: 300px;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
 }
 
-span {
+.product-list ul {
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
     font-size: 18px;
-    color: #333;
+    font-weight: bold;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .home-container {
+        width: 90%;
+        margin: 20px auto;
+    }
+    
+    .home-container h1 {
+        font-size: 24px;
+    }
+    
+    .home-container button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .product-list ul {
+        font-size: 16px;
+    }
 }

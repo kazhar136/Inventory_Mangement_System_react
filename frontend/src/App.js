@@ -5,6 +5,8 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import { useState } from 'react';
 import RefreshHandler from './RefresHandler'; // Corrected typo in filename
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 
 
@@ -19,6 +21,8 @@ function App() {
   };
 
   return (
+    <>
+    <Navbar />
  
     <div className="App">
       
@@ -38,6 +42,11 @@ function App() {
     
    
     </div>
+
+    <Footer/>
+
+
+    </>
   
   );
 }
