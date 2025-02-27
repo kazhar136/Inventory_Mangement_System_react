@@ -12,7 +12,6 @@ function Login() {
         email: '',
         password: ''
     });
-    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -93,7 +92,7 @@ function Login() {
                         value={loginInfo.password}
                     />    
                 </div>
-                <button type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
+                <button type="submit">Login</button>
                 <span>Don't have an account? 
                     <Link to="/signup">Sign up</Link>
                 </span>
