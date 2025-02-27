@@ -4,59 +4,63 @@ import { ToastContainer } from "react-toastify";
 import { handleError, handleSuccess } from "../utils";
 
 function Signup() {
+    // State to store user signup details
     const [signupInfo, setSignupInfo] = useState({
         name: '',
         email: '',
         password: ''
     });
-    const [loading, setLoading] = useState(false);  // <-- Loading state added
 
     const navigate = useNavigate();
 
+    // Function to handle input field changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setSignupInfo(prev => ({ ...prev, [name]: value }));
+        console.log(name, value);
+        const copySignupInfo = { ...signupInfo };
+        copySignupInfo[name]= value;
+        setSignupInfo(copySignupInfo);
     };
-
+    
+    // Function to handle form submission
     const handleSignup = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default form submission behavior
 
         const { name, email, password } = signupInfo;
         
+        // Validate input fields
         if (!name || !email || !password) {
-            return handleError('All fields are required.');
+            return handleError('Name, email, and password are required.');
         }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return handleError("Please enter a valid email address.");
-        }
-
-        if (password.length < 6) {
-            return handleError("Password must be at least 6 characters long.");
-        }
-
-        setLoading(true);  // <-- Start loading
-
+        
         try {
-            const response = await fetch("https://inventory-mangement-system-react.onrender.com/auth/signup", { 
+            const url = "https://inventory-mangement-system-react.onrender.com/auth/signup"; // API endpoint for signup
+            
+            // Sending signup data to the server
+            const response = await fetch(url, { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(signupInfo)
             });
             
             const result = await response.json();
-            if (result.success) {
-                handleSuccess(result.message || "Signup successful!");
-                setTimeout(() => navigate('/login'), 1000);
+            const { message, success, error } = result;
+            
+            if (success) {
+                handleSuccess(message);
+                setTimeout(() => {
+                    navigate('/login'); // Redirect to login page on success
+                }, 1000);
+            } else if (error) {
+                const details = error?.details?.[0]?.message || "Signup failed.";
+                handleError(details);
             } else {
-                handleError(result.error?.details?.[0]?.message || result.message || "Signup failed.");
+                handleError(message);
             }
-        } catch {
+            console.log(result);
+        } catch (err) {
             handleError("An error occurred during signup. Please try again.");
         }
-
-        setLoading(false);  // <-- Stop loading
     };
 
     return (
@@ -69,9 +73,9 @@ function Signup() {
                         onChange={handleChange}
                         type="text"
                         name="name"
+                        autoFocus
                         placeholder="Enter your name" 
                         value={signupInfo.name}
-                        autoFocus
                     /> 
                 </div>
                 <div>
@@ -80,7 +84,8 @@ function Signup() {
                         onChange={handleChange}
                         type="email"
                         name="email"
-                        placeholder="Enter your email" 
+                        autoFocus
+                        placeholder="Enter your Email..." 
                         value={signupInfo.email}
                     />    
                 </div>
@@ -90,15 +95,14 @@ function Signup() {
                         onChange={handleChange}
                         type="password"
                         name="password"
-                        placeholder="Enter your password" 
+                        autoFocus
+                        placeholder="Enter your Password" 
                         value={signupInfo.password}
                     />    
                 </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? "Signing up..." : "Signup"}  {/* <-- Button text changes when loading */}
-                </button>
+                <button type="submit">Signup</button>
                 <span>Already Have An Account? 
-                    <Link to="/login"> Login</Link>
+                    <Link to="/login">Login</Link>
                 </span>
             </form>
             <ToastContainer />
