@@ -4,7 +4,6 @@ import { ToastContainer } from "react-toastify";
 import { handleError, handleSuccess } from "../utils";
 
 function Signup() {
-    // State to store user signup details
     const [signupInfo, setSignupInfo] = useState({
         name: '',
         email: '',
@@ -16,12 +15,9 @@ function Signup() {
     // Function to handle input field changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value);
-        const copySignupInfo = { ...signupInfo };
-        copySignupInfo[name]= value;
-        setSignupInfo(copySignupInfo);
+        setSignupInfo(prev => ({ ...prev, [name]: value }));
     };
-    
+
     // Function to handle form submission
     const handleSignup = async (e) => {
         e.preventDefault(); // Prevent default form submission behavior
@@ -30,35 +26,35 @@ function Signup() {
         
         // Validate input fields
         if (!name || !email || !password) {
-            return handleError('Name, email, and password are required.');
+            return handleError('All fields are required.');
+        }
+
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return handleError("Please enter a valid email address.");
+        }
+
+        // Password strength validation (minimum 6 characters)
+        if (password.length < 6) {
+            return handleError("Password must be at least 6 characters long.");
         }
         
         try {
-            const url = "https://inventory-mangement-system-react.onrender.com/auth/signup"; // API endpoint for signup
-            
-            // Sending signup data to the server
-            const response = await fetch(url, { 
+            const response = await fetch("https://inventory-mangement-system-react.onrender.com/auth/signup", { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(signupInfo)
             });
             
             const result = await response.json();
-            const { message, success, error } = result;
-            
-            if (success) {
-                handleSuccess(message);
-                setTimeout(() => {
-                    navigate('/login'); // Redirect to login page on success
-                }, 1000);
-            } else if (error) {
-                const details = error?.details?.[0]?.message || "Signup failed.";
-                handleError(details);
+            if (result.success) {
+                handleSuccess(result.message || "Signup successful!");
+                setTimeout(() => navigate('/login'), 1000);
             } else {
-                handleError(message);
+                handleError(result.error?.details?.[0]?.message || result.message || "Signup failed.");
             }
-            console.log(result);
-        } catch (err) {
+        } catch {
             handleError("An error occurred during signup. Please try again.");
         }
     };
@@ -73,9 +69,9 @@ function Signup() {
                         onChange={handleChange}
                         type="text"
                         name="name"
-                        autoFocus
                         placeholder="Enter your name" 
                         value={signupInfo.name}
+                        autoFocus
                     /> 
                 </div>
                 <div>
@@ -84,8 +80,7 @@ function Signup() {
                         onChange={handleChange}
                         type="email"
                         name="email"
-                        autoFocus
-                        placeholder="Enter your Email..." 
+                        placeholder="Enter your email" 
                         value={signupInfo.email}
                     />    
                 </div>
@@ -95,14 +90,13 @@ function Signup() {
                         onChange={handleChange}
                         type="password"
                         name="password"
-                        autoFocus
-                        placeholder="Enter your Password" 
+                        placeholder="Enter your password" 
                         value={signupInfo.password}
                     />    
                 </div>
                 <button type="submit">Signup</button>
                 <span>Already Have An Account? 
-                    <Link to="/login">Login</Link>
+                    <Link to="/login"> Login</Link>
                 </span>
             </form>
             <ToastContainer />
