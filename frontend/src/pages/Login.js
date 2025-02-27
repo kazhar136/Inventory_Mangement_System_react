@@ -12,7 +12,7 @@ function Login() {
         email: '',
         password: ''
     });
-    onst [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
