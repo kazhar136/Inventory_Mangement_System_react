@@ -1,37 +1,39 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleError, handleSuccess } from "../utils";
 import { ToastContainer } from "react-toastify";
-import './home.css';
+import './home.css'
+
+
+
 
 function Home() {
+    // State to store logged-in user's name
     const [loggedInUser, setLoggedInUser] = useState('');
+    // State to store fetched products
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Retrieve logged-in user's name from local storage
+        setLoggedInUser(localStorage.getItem('loggedInUser'));
+    }, []);
+
     const navigate = useNavigate();
 
     // Function to handle logout
-    const handleLogout = useCallback(() => {
+    const handleLogout = () => {
+        // Remove authentication data from local storage
         localStorage.removeItem('token');
         localStorage.removeItem('loggedInUser');
         handleSuccess('User Logged Out');
-
+        
+        // Redirect to login page after a short delay
         setTimeout(() => {
             navigate('/login');
-        }, 100);
-    }, [navigate]);
+        }, 1000);
+    };
 
-    useEffect(() => {
-        setLoggedInUser(localStorage.getItem('loggedInUser'));
-
-        // Auto Logout after 1 minute (60 seconds)
-        const logoutTimer = setTimeout(() => {
-            handleLogout();
-        }, 60 * 1000); // 1 minute
-
-        return () => clearTimeout(logoutTimer);
-    }, [handleLogout]);
-
+    // Function to fetch product data from the backend
     const fetchProducts = async () => {
         try {
             const url = "https://inventory-mangement-system-react.onrender.com/products";
@@ -48,8 +50,6 @@ function Home() {
 
         } catch (err) {
             handleError("Failed to fetch products. Please try again.");
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -61,24 +61,20 @@ function Home() {
         <div className="home-container">
             <h1>Welcome {loggedInUser}</h1>
             <button onClick={handleLogout}>Logout</button>
-
+    
+            {/* Display product list */}
             <div className="product-list">
-                {loading ? (
-                    <p>Loading products...</p>
-                ) : products ? (
-                    products.map((item, index) => (
-                        <ul key={index}>
-                            <span>{item.name} : {item.price}</span>
-                        </ul>
-                    ))
-                ) : (
-                    <p>No products available.</p>
-                )}
+                {products && products.map((item, index) => (
+                    <ul key={index}>
+                        <span>{item.name} : {item.price}</span>
+                    </ul>
+                ))}
             </div>
-
+    
             <ToastContainer />
         </div>
     );
+    
 }
 
 export default Home;
