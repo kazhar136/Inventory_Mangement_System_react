@@ -31,46 +31,38 @@ const signup = async (req, res) => {
 }
 
 const login = async (req, res) => {
-    try{
-        const {email, password } = req.body;
-        const user = await usermodel.findOne({ email });
-        const errormsg = 'Auth failed emaill or password is wrong';
-        if (!user){
+    try {
+        const { email, password } = req.body;
+        const user = await usermodel.findOne({ email }).select('+password'); // ✅ Select password explicitly
 
-            return res.status(403)
-                .json({message: errormsg, success: false});
+        if (!user) {
+            return res.status(403).json({ message: "Auth failed, email or password is wrong", success: false });
         }
+
         const isPassEqual = await bcrypt.compare(password, user.password);
-        if(!isPassEqual){
-            return res.status(403)
-                .json({message: errormsg, success: false});
-
+        if (!isPassEqual) {
+            return res.status(403).json({ message: "Auth failed, email or password is wrong", success: false });
         }
+
+        // ✅ Optimize JWT Token Generation
         const jwToken = jwt.sign(
-            {email: user.email, id: user._id},
-            process.env.JWT_SECRET,
-            { expiresIn: '1h'}
+            { id: user._id, email: user.email }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: "1h" }
+        );
 
-        )
+        res.status(200).json({
+            message: "Login successful",
+            success: true,
+            token: jwToken,
+            user: { email: user.email, name: user.name }
+        });
 
-        res.status(200)
-            .json({
-                message: 'login successfully',
-                success: true,
-                jwToken,
-                email,
-                name: user.name
-            })
-
-    } catch(err){
-        res.status(500)
-            .json({
-                message: 'internal server error',
-                success: false
-            })
-
+    } catch (err) {
+        res.status(500).json({ message: "Internal server error", success: false });
     }
-}
+};
+
 
 
 module.exports = {
